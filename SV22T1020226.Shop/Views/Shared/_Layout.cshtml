@@ -1,0 +1,140 @@
+@{
+    var cart = ApplicationContext.GetSessionData<List<CartItem>>("Cart") ?? new List<CartItem>();
+    int cartCount = cart.Sum(c => c.Quantity);
+    bool isAuthenticated = User.Identity?.IsAuthenticated == true;
+    string customerName = User.Identity?.Name ?? "";
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ĐỔI TITLE -->
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " - " : "")LDM Shop</title>
+
+    <!-- (có thể đổi logo sau nếu muốn) -->
+    <link rel="icon" type="image/svg+xml" href="~/brand/logo-hkb-men.svg" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body class="beach-body">
+
+    <!-- HEADER -->
+    <header class="beach-header shadow-sm">
+        <div class="container d-flex align-items-center justify-content-between py-2">
+
+            <!-- ĐỔI LOGO TEXT -->
+            <a class="beach-logo" asp-controller="Home" asp-action="Index">
+                LDM Shop
+            </a>
+
+            <form class="beach-search d-none d-lg-flex" asp-controller="Product" asp-action="Index" method="get">
+                <input type="text" name="search" placeholder="Tìm áo, quần, size, thương hiệu…" value="@Context.Request.Query["search"]" />
+                <button type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+            <nav class="beach-nav d-none d-lg-flex gap-3">
+                <a class="@(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                <a class="@(currentController == "Product" ? "active" : "")" asp-controller="Product" asp-action="Index">Sản phẩm</a>
+                <a class="@(currentController == "Home" && currentAction == "Contact" ? "active" : "")" asp-controller="Home" asp-action="Contact">Liên hệ</a>
+                <a class="@(currentController == "Home" && currentAction == "About" ? "active" : "")" asp-controller="Home" asp-action="About">Giới thiệu</a>
+            </nav>
+
+            <div class="d-flex align-items-center gap-3">
+                <a class="beach-icon position-relative" asp-controller="Cart" asp-action="Index">
+                    <i class="bi bi-bag fs-4"></i>
+                    @if (cartCount > 0)
+                    {
+                        <span class="beach-badge">@cartCount</span>
+                    }
+                </a>
+
+                @if (isAuthenticated)
+                {
+                    <div class="dropdown">
+                        <a class="beach-icon dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle fs-4"></i>
+                            <span class="d-none d-xl-inline text-truncate" style="max-width:7rem">@customerName</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="bi bi-person me-2"></i>Tài khoản</a></li>
+                            <li><a class="dropdown-item" asp-controller="Order" asp-action="History"><i class="bi bi-bag-check me-2"></i>Đơn hàng</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword"><i class="bi bi-key me-2"></i>Đổi mật khẩu</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a class="beach-icon" asp-controller="Account" asp-action="Login"><i class="bi bi-person"></i></a>
+                }
+            </div>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="beach-footer text-white py-5 mt-4">
+        <div class="container">
+            <div class="row">
+
+                <!-- ĐỔI TÊN SHOP -->
+                <div class="col-md-4 mb-3">
+                    <h5>LDM Shop</h5>
+                    <p>Sống đơn giản cần giản đơn - Sống lơ mơ đã có LDM Shop lo</p>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <h6>Cửa hàng</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Trang chủ</a></li>
+                        <li><a href="#">Sản phẩm</a></li>
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <h6>Hỗ trợ</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Đổi trả 30 ngày</a></li>
+                        <li><a href="#">Chọn size</a></li>
+                        <li><a href="#">Thanh toán</a></li>
+                        <li><a href="#">Vận chuyển</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h6>Liên hệ</h6>
+                    <p class="small"><i class="bi bi-geo-alt"></i> TDP Thế Mỹ A, Phường Phong Phú, Thành Phố Huế</p>
+                    <p class="small"><i class="bi bi-telephone"></i> 0339108369</p>
+                    <p class="small"><i class="bi bi-envelope"></i> ducmanh0708200@icloud.com</p>
+                </div>
+            </div>
+
+            <!-- ĐỔI COPYRIGHT -->
+            <div class="text-center mt-3">
+                &copy; @DateTime.Now.Year Le Duc Manh.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

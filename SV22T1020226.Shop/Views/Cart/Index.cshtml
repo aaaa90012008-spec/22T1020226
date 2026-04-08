@@ -1,0 +1,147 @@
+@model List<CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    decimal total = Model.Sum(c => c.TotalPrice);
+}
+
+<div class="ldm-cart container py-5">
+
+    <!-- HEADER -->
+    <div class="mb-4 text-center">
+        <h1 class="fw-bold">Giỏ hàng của bạn</h1>
+        <p class="text-muted">Kiểm tra và hoàn tất đơn hàng nhanh chóng</p>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+
+            <!-- LEFT -->
+            <div class="col-lg-8">
+
+                @foreach (var item in Model)
+                {
+                    <div class="ldm-cart-item d-flex align-items-center mb-3 p-3"
+                         data-id="@item.ProductID">
+
+                        <!-- IMAGE -->
+                        <img src="@(string.IsNullOrEmpty(item.Photo) ? "/anh/products/noproduct.svg" : "/anh/products/" + item.Photo)"
+                             class="ldm-cart-img" />
+
+                        <!-- INFO -->
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-1">@item.ProductName</h6>
+                            <div class="text-muted small">@item.Unit</div>
+                            <div class="fw-bold text-danger">@item.Price.ToString("N0") đ</div>
+                        </div>
+
+                        <!-- QUANTITY AJAX -->
+                        <div class="ldm-qty d-flex align-items-center"
+                             data-id="@item.ProductID">
+
+                            <button type="button" class="btn btn-sm btn-outline-dark minus">−</button>
+
+                            <input type="number"
+                                   class="form-control text-center mx-2 qty-input"
+                                   value="@item.Quantity"
+                                   min="0" />
+
+                            <button type="button" class="btn btn-sm btn-outline-dark plus">+</button>
+
+                        </div>
+
+                        <!-- TOTAL -->
+                        <div class="fw-bold ms-4 text-end cart-total-item" style="width:120px">
+                            @item.TotalPrice.ToString("N0") đ
+                        </div>
+
+                        <!-- REMOVE -->
+                        <button type="button"
+                                class="btn btn-sm text-danger ms-3 btn-remove"
+                                data-id="@item.ProductID">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                    </div>
+                }
+
+                <!-- ACTION -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-controller="Product" asp-action="Index" class="btn btn-outline-dark">
+                        ← Tiếp tục mua
+                    </a>
+
+                    <button class="btn btn-outline-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#clearCartModal">
+                        Xóa tất cả
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+            <div class="col-lg-4">
+
+                <div class="ldm-summary p-4">
+
+                    <h5 class="fw-bold mb-3">Tóm tắt đơn hàng</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Tạm tính</span>
+                        <span class="cart-total">@total.ToString("N0") đ</span>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between mb-4 fw-bold fs-5">
+                        <span>Tổng</span>
+                        <span class="text-danger cart-total">@total.ToString("N0") đ</span>
+                    </div>
+
+                    <a asp-controller="Order" asp-action="Checkout"
+                       class="btn btn-dark w-100 py-3 rounded-pill">
+                        Thanh toán ngay
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-cart-x fs-1 text-muted mb-3"></i>
+            <h4>Giỏ hàng trống</h4>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-dark mt-3">
+                Mua ngay
+            </a>
+        </div>
+    }
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="clearCartModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0">
+
+            <div class="modal-body text-center p-4">
+                <i class="bi bi-trash fs-1 text-danger mb-3"></i>
+                <h5 class="fw-bold">Xóa toàn bộ giỏ hàng?</h5>
+                <p class="text-muted small">Không thể hoàn tác</p>
+
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+
+                    <form asp-action="Clear" method="post">
+                        <button class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

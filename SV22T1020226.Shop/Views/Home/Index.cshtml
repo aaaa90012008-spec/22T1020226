@@ -1,0 +1,121 @@
+@{
+    ViewData["Title"] = "Trang chủ";
+    var products = ViewBag.FeaturedProducts as List<Product> ?? new List<Product>();
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+    string[] icons = { "bi-bag-heart", "bi-scissors", "bi-sunglasses", "bi-suit-heart", "bi-patch-check", "bi-stars" };
+}
+
+<!-- HERO (Brand lớn) -->
+<section class="ldm-hero text-white d-flex align-items-center">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">LDM Shop</h1>
+        <p class="lead mb-4">Sống đơn giản cần giản đơn - Sống lơ mơ đã có LDM Shop</p>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-light btn-lg rounded-pill px-5">
+            Khám phá ngay
+        </a>
+    </div>
+</section>
+
+<!-- USP -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <i class="bi bi-stars fs-2 text-primary mb-2"></i>
+                <h5 class="fw-bold">Thiết kế hiện đại</h5>
+                <p class="text-muted small">Phong cách trẻ trung, dễ phối</p>
+            </div>
+            <div class="col-md-4">
+                <i class="bi bi-truck fs-2 text-primary mb-2"></i>
+                <h5 class="fw-bold">Giao hàng nhanh</h5>
+                <p class="text-muted small">Toàn quốc 2–5 ngày</p>
+            </div>
+            <div class="col-md-4">
+                <i class="bi bi-patch-check fs-2 text-primary mb-2"></i>
+                <h5 class="fw-bold">Đảm bảo chất lượng</h5>
+                <p class="text-muted small">Đổi trả dễ dàng</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DANH MỤC (GIỮ NGUYÊN) -->
+@if (categories.Any())
+{
+    <section class="py-5">
+        <div class="container">
+            <div class="d-flex justify-content-between mb-3">
+                <h2 class="fw-bold">Danh mục</h2>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-outline-dark btn-sm">Xem shop</a>
+            </div>
+
+            <div class="row g-3">
+                @for (int i = 0; i < categories.Count && i < 6; i++)
+                {
+                    var cat = categories[i];
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <a class="text-decoration-none text-center d-block p-3 border rounded-3 h-100"
+                           asp-controller="Product" asp-action="Index" asp-route-categoryId="@cat.CategoryID">
+                            <i class="bi @icons[i % icons.Length] fs-3 mb-2"></i>
+                            <div>@cat.CategoryName</div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- SẢN PHẨM (GIỮ NGUYÊN CORE) -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between mb-3">
+            <h2 class="fw-bold">Sản phẩm nổi bật</h2>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-dark btn-sm">Xem tất cả</a>
+        </div>
+
+        @if (products.Any())
+        {
+            <div class="row g-4">
+                @foreach (var p in products)
+                {
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@p.ProductID">
+                                <img class="card-img-top"
+                                     src="@(string.IsNullOrEmpty(p.Photo) ? "/anh/products/noproduct.svg" : "/anh/products/" + p.Photo)" />
+                            </a>
+
+                            <div class="card-body text-center">
+                                <h6>@p.ProductName</h6>
+                                <div class="text-danger fw-bold">@p.Price.ToString("N0") đ</div>
+
+                                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                    <input type="hidden" name="productId" value="@p.ProductID" />
+                                    <button class="btn btn-dark w-100 mt-2">
+                                        Thêm vào giỏ
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted text-center">Chưa có sản phẩm</p>
+        }
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5 text-center text-white ldm-cta">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Nâng cấp phong cách của bạn</h2>
+        <p class="mb-4">Khám phá ngay bộ sưu tập mới tại LDM Shop</p>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-light btn-lg px-5 rounded-pill">
+            Mua ngay
+        </a>
+    </div>
+</section>

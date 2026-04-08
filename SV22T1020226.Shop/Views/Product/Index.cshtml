@@ -1,0 +1,196 @@
+@model PagedResult<Product>
+@{
+    ViewData["Title"] = "Sản phẩm";
+    var input = ViewBag.SearchInput as ProductSearchInput;
+    var categories = ViewBag.Categories as List<Category> ?? new List<Category>();
+}
+
+<div class="container py-4 catalog-page">
+
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+            </li>
+            <li class="breadcrumb-item active">Sản phẩm</li>
+        </ol>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="catalog-hero reveal mb-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
+            <div>
+                <h1 class="catalog-hero__title h3 fw-bold mb-1 font-serif">Cửa hàng LDM Shop</h1>
+                <p class="text-muted mb-0 small">Lọc theo danh mục, khoảng giá và từ khóa — tìm áo, quần, áo khoác hoặc phụ kiện.</p>
+            </div>
+            <div class="catalog-hero__count text-muted small">
+                Tìm thấy <strong class="text-dark">@Model.RowCount</strong> sản phẩm
+            </div>
+        </div>
+    </header>
+
+    <!-- FILTER -->
+    <form id="searchForm"
+          asp-controller="Product"
+          asp-action="Index"
+          method="get"
+          class="catalog-filter-form mb-4">
+
+        <input type="hidden" name="page" value="1" />
+
+        <!-- Collapse toggle cho mobile -->
+        <button class="btn btn-outline-primary w-100 d-lg-none mb-2 catalog-filter-toggle"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#catalogFilterCollapse"
+                aria-expanded="false"
+                aria-controls="catalogFilterCollapse">
+            <i class="bi bi-sliders me-2"></i>Bộ lọc & tìm kiếm
+        </button>
+
+        <div class="collapse d-lg-block" id="catalogFilterCollapse">
+            <div class="catalog-toolbar card border-0 shadow-sm">
+                <div class="card-body p-3 p-lg-4">
+                    <div class="row g-3 align-items-end">
+
+                        <!-- CATEGORY -->
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <label class="form-label small fw-bold mb-1">Danh mục</label>
+                            <select name="categoryId" class="form-select form-select-sm">
+                                <option value="0">Tất cả danh mục</option>
+                                @foreach (var c in categories)
+                                {
+                                    if (input?.CategoryID == c.CategoryID)
+                                    {
+                                        <option value="@c.CategoryID" selected>@c.CategoryName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@c.CategoryID">@c.CategoryName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- SEARCH -->
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <label class="form-label small fw-bold mb-1">Từ khóa</label>
+                            <input type="text"
+                                   name="search"
+                                   class="form-control form-control-sm"
+                                   placeholder="Tên sản phẩm, loại, từ khóa…"
+                                   value="@input?.SearchValue" />
+                        </div>
+
+                        <!-- PRICE -->
+                        <div class="col-6 col-sm-4 col-xl-2">
+                            <label class="form-label small fw-bold mb-1">Giá từ</label>
+                            <input type="number"
+                                   name="minPrice"
+                                   class="form-control form-control-sm"
+                                   placeholder="Từ"
+                                   value="@(input?.MinPrice > 0 ? input.MinPrice.ToString("0") : "")"
+                                   min="0" step="1000" />
+                        </div>
+
+                        <div class="col-6 col-sm-4 col-xl-2">
+                            <label class="form-label small fw-bold mb-1">Đến</label>
+                            <input type="number"
+                                   name="maxPrice"
+                                   class="form-control form-control-sm"
+                                   placeholder="Đến"
+                                   value="@(input?.MaxPrice > 0 ? input.MaxPrice.ToString("0") : "")"
+                                   min="0" step="1000" />
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="col-12 col-sm-4 col-xl-auto d-flex flex-wrap gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">
+                                <i class="bi bi-search me-1"></i>Áp dụng
+                            </button>
+                            <button type="button" id="btnClear" class="btn btn-outline-secondary btn-sm">
+                                Xóa lọc
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- PRODUCT LIST -->
+    <div id="productList">
+        @await Html.PartialAsync("_ProductList", Model)
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("searchForm");
+        const productList = document.getElementById("productList");
+
+        // SUBMIT AJAX
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            let query = new URLSearchParams(new FormData(form)).toString();
+
+            fetch(form.action + "?" + query, {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                credentials: "same-origin"
+            })
+            .then(res => res.text())
+            .then(html => {
+                productList.innerHTML = html;
+                history.pushState(null, "", "/Product/Index?" + query);
+            });
+        });
+
+        // CLEAR FILTER AJAX
+        document.getElementById("btnClear").addEventListener("click", function () {
+            form.reset();
+
+            fetch("/Product/Index?clear=true", {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                credentials: "same-origin"
+            })
+            .then(res => res.text())
+            .then(html => {
+                productList.innerHTML = html;
+                history.pushState(null, "", "/Product/Index");
+            });
+        });
+
+        // PAGINATION AJAX
+        productList.addEventListener("click", function (e) {
+            if (e.target.tagName === "A" && e.target.dataset.page) {
+                e.preventDefault();
+                const page = e.target.dataset.page;
+                const query = new URLSearchParams(new FormData(form));
+                query.set("page", page);
+
+                fetch(form.action + "?" + query.toString(), {
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                    credentials: "same-origin"
+                })
+                .then(res => res.text())
+                .then(html => {
+                    productList.innerHTML = html;
+                    history.pushState(null, "", "/Product/Index?" + query.toString());
+                });
+            }
+        });
+
+        // BACK / FORWARD
+        window.onpopstate = function () {
+            fetch(location.href, {
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                credentials: "same-origin"
+            })
+            .then(res => res.text())
+            .then(html => { productList.innerHTML = html; });
+        };
+    });
+</script>

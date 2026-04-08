@@ -1,0 +1,89 @@
+@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LDM Shop Admin — Đăng nhập</title>
+    <link rel="icon" type="image/svg+xml" href="~/brand/logo-hkb-men.svg" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/adminlte/css/adminlte.css" />
+    <link rel="stylesheet" href="@Url.Content("~/css/site.css")" asp-append-version="true" />
+</head>
+<body class="login-page login-page--hkb-admin">
+    <div class="hkb-admin-login">
+        <aside class="hkb-admin-login__side" aria-hidden="false">
+            <div class="hkb-admin-login__side-inner">
+                <div class="hkb-admin-login__visual">
+                    <img class="hkb-admin-login__visual-img"
+                         src="~/banner/hkb-hero.svg"
+                         asp-append-version="true"
+                         width="900"
+                         height="600"
+                         loading="lazy"
+                         decoding="async"
+                         alt="" />
+                </div>
+                <div class="hkb-admin-login__side-copy">
+                    <img class="hkb-admin-login__logo" src="~/brand/logo-hkb-men.svg" width="220" height="36" alt="LDM Shop" asp-append-version="true" />
+                    <h2 class="hkb-admin-login__headline">Quản trị cửa hàng</h2>
+                    <p class="hkb-admin-login__lead">Theo dõi sản phẩm, đơn hàng và khách hàng — giao diện tối giản, thao tác nhanh.</p>
+                    <ul class="hkb-admin-login__bullets">
+                        <li><i class="bi bi-shield-lock"></i> Đăng nhập bảo mật</li>
+                        <li><i class="bi bi-bag-check"></i> Đơn hàng &amp; tồn kho</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <main class="hkb-admin-login__main">
+            <div class="hkb-admin-login__card card border-0 shadow">
+                <div class="card-body p-4 p-sm-5">
+                    <div class="text-center mb-4">
+                        <h1 class="h4 fw-bold text-dark mb-1">Đăng nhập quản trị</h1>
+                        <p class="text-muted small mb-0">Hệ thống LDM Shop</p>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger border-0 py-2 small mb-3">
+                            @Html.ValidationSummary(true)
+                        </div>
+                    }
+
+                    <form asp-action="Login" asp-controller="Account" method="post">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary">Email</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope"></i></span>
+                                <input type="email" name="email" class="form-control border-start-0" placeholder="you@company.com" autocomplete="username" autofocus />
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label small fw-semibold text-secondary">Mật khẩu</label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" name="password" class="form-control border-start-0" placeholder="••••••••" autocomplete="current-password" />
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-lg btn-dark fw-semibold py-3 rounded-0">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <p class="text-center small text-muted mt-4 mb-0">© @DateTime.Now.Year LDM Shop · Admin</p>
+        </main>
+    </div>
+
+    <script src="~/lib/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+</html>

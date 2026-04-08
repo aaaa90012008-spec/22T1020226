@@ -1,0 +1,72 @@
+﻿@model PagedResult<Product>
+
+@if (Model.DataItems.Any())
+{
+    <div class="row g-3">
+
+        @foreach (var p in Model.DataItems)
+        {
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card h-100">
+
+                    <a asp-action="Detail" asp-route-id="@p.ProductID">
+                        <img class="w-100"
+                             src="@(string.IsNullOrEmpty(p.Photo) ? "/anh/products/noproduct.svg" : "/anh/products/" + p.Photo)" />
+                    </a>
+
+                    <div class="p-2">
+                        <h6>@p.ProductName</h6>
+                        <div class="text-danger fw-bold">@p.Price.ToString("N0") đ</div>
+
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@p.ProductID" />
+                            <button class="btn btn-dark w-100 mt-2">Thêm vào giỏ</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <!-- PAGINATION -->
+    @if (Model.PageCount > 1)
+    {
+        <nav class="mt-4" aria-label="Phân trang">
+            <ul class="pagination justify-content-center flex-wrap">
+                <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                    <a href="#" class="page-link" data-page="@(Model.Page - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                @foreach (var p in Model.GetDisplayPages())
+                {
+                    if (p.IsEllipsis)
+                    {
+                        <li class="page-item disabled"><span class="page-link">&hellip;</span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item @(p.IsCurrent ? "active" : "")">
+                            <a href="#" class="page-link" data-page="@p.Page">@p.Page</a>
+                        </li>
+                    }
+                }
+
+                <li class="page-item @(Model.Page >= Model.PageCount ? "disabled" : "")">
+                    <a href="#" class="page-link" data-page="@(Model.Page + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+}
+else
+{
+    <div class="text-center py-5">
+        <h5>Không có sản phẩm</h5>
+    </div>
+}

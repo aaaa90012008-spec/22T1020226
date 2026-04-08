@@ -1,0 +1,142 @@
+@{
+    ViewData["Title"] = "Liên hệ";
+}
+
+<div class="contact-page summer-contact">
+
+    <!-- HERO -->
+    <div class="contact-hero">
+        <div class="container py-5">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                    </li>
+                    <li class="breadcrumb-item active">Liên hệ</li>
+                </ol>
+            </nav>
+
+            <div class="row align-items-center g-4">
+                <div class="col-lg-7">
+                    <p class="text-uppercase small fw-bold text-info mb-2">
+                        LDM SHOP
+                    </p>
+
+                    <h1 class="display-5 fw-bold mb-3">
+                        Kết nối cùng chúng tôi ☀️
+                    </h1>
+
+                    <p class="text-muted fs-5 mb-0">
+                        Hỗ trợ nhanh chóng – thân thiện – chuẩn phong cách mùa hè.
+                        Bạn cần tư vấn outfit, size hay đơn hàng? LDM luôn ở đây.
+                    </p>
+                </div>
+
+                <div class="col-lg-5 text-lg-end d-none d-lg-block">
+                    <div class="hero-icon">
+                        <i class="bi bi-chat-heart-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CONTENT -->
+    <div class="container py-5">
+        <div class="row g-4 g-lg-5 align-items-stretch">
+
+            <!-- FORM -->
+            <div class="col-lg-7">
+                <div class="card contact-form glass-card border-0 h-100">
+                    <div class="card-body p-4 p-lg-5">
+
+                        <h2 class="fw-bold mb-2">Gửi tin nhắn</h2>
+                        <p class="text-muted mb-4">
+                            Điền thông tin bên dưới – LDM phản hồi trong vài giờ.
+                        </p>
+
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Họ tên</label>
+                                <input type="text"
+                                       class="form-control form-control-lg rounded-4"
+                                       placeholder="Tên của bạn" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email"
+                                       class="form-control form-control-lg rounded-4"
+                                       placeholder="example@email.com" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Nội dung</label>
+                                <textarea class="form-control rounded-4"
+                                          rows="5"
+                                          placeholder="Bạn cần hỗ trợ gì?"></textarea>
+                            </div>
+
+                            <button type="button"
+                                    class="btn btn-info btn-lg rounded-pill px-4 shadow-sm"
+                                    onclick="alert('LDM Shop đã nhận tin nhắn 💙')">
+                                <i class="bi bi-send me-2"></i>
+                                Gửi ngay
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFO -->
+            <div class="col-lg-5">
+                <div class="card contact-info glass-card border-0 h-100">
+                    <div class="card-body p-4 p-lg-5">
+
+                        <h3 class="text-uppercase text-muted small mb-4">
+                            Thông tin liên hệ
+                        </h3>
+
+                        <div class="info-item mb-4">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <div>
+                                <strong>Địa chỉ</strong>
+                                <p>TDP Thế Mỹ A, Phường Phong Phú, Thành Phố Huế</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item mb-4">
+                            <i class="bi bi-telephone-fill"></i>
+                            <div>
+                                <strong>Hotline</strong>
+                                <p>0339108369</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item mb-4">
+                            <i class="bi bi-envelope-fill"></i>
+                            <div>
+                                <strong>Email</strong>
+                                <p>ducmanh0708200@icloud.com</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <i class="bi bi-clock-fill"></i>
+                            <div>
+                                <strong>Giờ mở cửa</strong>
+                                <p>
+                                    T2 - T7: 7h - 22h<br />
+                                    CN: 5h - 23h
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
